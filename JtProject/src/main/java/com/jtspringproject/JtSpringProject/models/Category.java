@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity(name="CATEGORY")
+// @Table(name="CATEGORY")
 public class Category {
 	@Id
 	@Column(name = "category_id")

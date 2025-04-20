@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 @Entity(name="PRODUCT")
+// @Table(name="PRODUCT")
 public class Product {
 	@Id
 	@Column(name = "product_id")

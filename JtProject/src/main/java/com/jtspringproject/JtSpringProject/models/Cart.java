@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Table(name="CART")
 @Entity(name="CART")
 public class Cart {
 

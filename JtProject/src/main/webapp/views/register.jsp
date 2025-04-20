@@ -14,14 +14,14 @@
     <!-- Custom CSS -->
     <style>
         :root {
-            --primary-color: #4e73df;
+            --primary-color: #ee4d2d;
             --secondary-color: #f8f9fc;
             --accent-color: #e74a3b;
         }
         
         body {
             font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, var(--primary-color) 0%, #2a4db7 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, #d73919 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -73,7 +73,7 @@
         
         .form-control:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+            box-shadow: 0 0 0 0.25rem rgba(238, 77, 45, 0.25);
         }
         
         .btn-primary {
@@ -86,7 +86,7 @@
         }
         
         .btn-primary:hover {
-            background-color: #2e59d9;
+            background-color: #d73919;
             transform: translateY(-3px);
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
         }

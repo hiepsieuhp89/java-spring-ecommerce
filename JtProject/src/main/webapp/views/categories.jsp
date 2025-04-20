@@ -17,7 +17,7 @@
     <!-- Custom CSS -->
     <style>
         :root {
-            --primary-color: #4e73df;
+            --primary-color: #ee4d2d;
             --secondary-color: #f8f9fc;
             --accent-color: #e74a3b;
             --dark-color: #5a5c69;
@@ -64,7 +64,7 @@
         }
         
         .btn-primary:hover {
-            background-color: #2e59d9;
+            background-color: #d73919;
             transform: translateY(-2px);
         }
         
@@ -111,7 +111,7 @@
         
         .form-control:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+            box-shadow: 0 0 0 0.25rem rgba(238, 77, 45, 0.25);
         }
         
         .btn-sm {

@@ -189,8 +189,8 @@ public class AdminController {
 		try
 		{
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/ecommjava","root","");
-			PreparedStatement stmt = con.prepareStatement("select * from users where username = ?"+";");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/ecommjava","root","123456");
+			PreparedStatement stmt = con.prepareStatement("select * from CUSTOMER where username = ?"+";");
 			
 			String username = SecurityContextHolder.getContext().getAuthentication().getName();
 			stmt.setString(1, username);
@@ -226,7 +226,7 @@ public class AdminController {
 		try
 		{
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/ecommjava","root","");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/ecommjava","root","123456");
 			
 			PreparedStatement pst = con.prepareStatement("update users set username= ?,email = ?,password= ?, address= ? where uid = ?;");
 			pst.setString(1, username);

@@ -70,14 +70,26 @@ public class userDao {
 
 	@Transactional
 	public User getUserByUsername(String username) {
-	        Query<User> query = sessionFactory.getCurrentSession().createQuery("from User where username = :username", User.class);
-	        query.setParameter("username", username);
-	        
-	        try {
-	            return query.getSingleResult();
-	        } catch (Exception e) {
-	            System.out.println(e.getMessage());
-	            return null; 
-	        }
-    	}
+		System.out.println("DAO: Getting user by username: " + username);
+        try {
+            System.out.println("DAO: Looking for user with username: " + username);
+            Session session = sessionFactory.getCurrentSession();
+            
+            // Use criteria query instead of HQL to avoid syntax issues
+            User user = (User) session.createQuery("from CUSTOMER where username = :username")
+                    .setParameter("username", username)
+                    .uniqueResult();
+                    
+            if (user != null) {
+                System.out.println("DAO: Found user: " + user.getUsername() + ", role: " + user.getRole());
+            } else {
+                System.out.println("DAO: No user found with username: " + username);
+            }
+            return user;
+        } catch (Exception e) {
+            System.out.println("DAO: Error getting user: " + e.getMessage());
+            e.printStackTrace();
+            return null; 
+        }
+    }
 }
