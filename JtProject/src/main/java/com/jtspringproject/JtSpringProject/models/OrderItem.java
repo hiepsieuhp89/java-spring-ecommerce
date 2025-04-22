@@ -2,7 +2,7 @@ package com.jtspringproject.JtSpringProject.models;
 
 import javax.persistence.*;
 
-@Entity
+@Entity(name = "ORDER_ITEMS")
 @Table(name = "ORDER_ITEMS")
 public class OrderItem {
 

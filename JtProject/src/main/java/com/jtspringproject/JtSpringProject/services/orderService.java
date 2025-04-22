@@ -29,8 +29,11 @@ public class orderService {
         order.setShippingAddress(shippingAddress);
         order.setPaymentMethod(paymentMethod);
         
+        // Get cart items without modifying the cart's collection
+        List<CartItem> cartItems = cartService.getCartItemsByCart(cart);
+        
         // Add all cart items to order
-        for (CartItem cartItem : cart.getCartItems()) {
+        for (CartItem cartItem : cartItems) {
             OrderItem orderItem = OrderItem.fromCartItem(order, cartItem);
             order.addOrderItem(orderItem);
         }

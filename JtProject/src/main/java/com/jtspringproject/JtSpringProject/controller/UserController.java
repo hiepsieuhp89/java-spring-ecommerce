@@ -308,8 +308,9 @@ public class UserController {
 		
 		if (user != null) {
 			Cart cart = cartService.getActiveCartForUser(user);
+			List<CartItem> cartItems = cartService.getCartItemsByCart(cart);
 			
-			if (cart.getCartItems().isEmpty()) {
+			if (cartItems.isEmpty()) {
 				redirectAttributes.addFlashAttribute("errorMessage", "Your cart is empty.");
 				return "redirect:/cart";
 			}
