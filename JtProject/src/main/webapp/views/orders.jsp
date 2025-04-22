@@ -337,7 +337,7 @@
                                     <img src="${item.product.image}" alt="${item.product.name}" class="order-item-image">
                                     <div class="order-item-details">
                                         <h6 class="order-item-title">${item.product.name}</h6>
-                                        <div class="order-item-quantity">Qty: ${item.quantity} × $${item.price}</div>
+                                        <div class="order-item-quantity">Qty: ${item.quantity} X $${item.price}</div>
                                     </div>
                                 </div>
                             </c:forEach>
