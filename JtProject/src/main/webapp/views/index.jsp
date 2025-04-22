@@ -583,6 +583,9 @@
                     <a class="nav-link" href="cart">
                         <i class="fas fa-shopping-cart me-1"></i> Cart
                     </a>
+                    <a class="nav-link" href="orders">
+                        <i class="fas fa-box me-1"></i> My Orders
+                    </a>
                     <a class="nav-link" href="profileDisplay">
                         <i class="fas fa-user me-1"></i> Profile
                     </a>
@@ -623,9 +626,14 @@
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
-                    <a href="#products" class="btn btn-light btn-lg">
-                        <i class="fas fa-shopping-bag me-2"></i> Start Shopping
-                    </a>
+                    <div class="d-flex gap-3">
+                        <a href="#products" class="btn btn-light btn-lg">
+                            <i class="fas fa-shopping-bag me-2"></i> Start Shopping
+                        </a>
+                        <a href="orders" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-box me-2"></i> View My Orders
+                        </a>
+                    </div>
                 </div>
                 <div class="col-md-6 text-center" data-aos="fade-left">
                     <img src="https://images.unsplash.com/photo-1607082349566-187342175e2f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 

@@ -146,7 +146,7 @@
         </div>
         
         <div class="text-center mt-3">
-            <a href="/user/home" class="btn btn-outline-secondary">
+            <a href="/" class="btn btn-outline-secondary">
                 <i class="fas fa-arrow-left me-2"></i>Back to Homepage
             </a>
         </div>
