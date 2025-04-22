@@ -594,6 +594,22 @@
         </div>
     </nav>
 
+    <!-- Flash Messages -->
+    <div class="container" style="margin-top: 90px;">
+        <c:if test="${not empty successMessage}">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i> ${successMessage}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+        <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i> ${errorMessage}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+    </div>
+
     <!-- Hero Section -->
     <div class="hero-section">
         <div class="container">
@@ -759,10 +775,25 @@
                                 <span class="currency">$</span>${product.price}
                             </div>
                             <p class="product-description">${product.description}</p>
-                            <a href="cart/add?id=${product.id}" class="btn btn-primary btn-add-to-cart">
-                                <i class="fas fa-cart-plus"></i>
-                                Add to Cart
-                            </a>
+                            <c:choose>
+                                <c:when test="${product.quantity > 0}">
+                                    <form action="cart/add" method="get" class="d-grid">
+                                        <input type="hidden" name="id" value="${product.id}">
+                                        <div class="d-flex mb-2">
+                                            <input type="number" name="quantity" value="1" min="1" max="${product.quantity}" class="form-control me-2" style="max-width: 80px;">
+                                            <button type="submit" class="btn btn-primary flex-grow-1">
+                                                <i class="fas fa-cart-plus me-1"></i> Add to Cart
+                                            </button>
+                                        </div>
+                                        <small class="text-muted">${product.quantity} in stock</small>
+                                    </form>
+                                </c:when>
+                                <c:otherwise>
+                                    <button class="btn btn-secondary w-100" disabled>
+                                        <i class="fas fa-times-circle me-1"></i> Out of Stock
+                                    </button>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
                 </div>

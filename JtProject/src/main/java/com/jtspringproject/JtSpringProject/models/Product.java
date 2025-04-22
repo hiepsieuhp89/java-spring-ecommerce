@@ -103,5 +103,11 @@ public class Product {
     @JoinColumn(name = "customer_id")
     private User customer;
 	
-	
+	public User getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(User customer) {
+		this.customer = customer;
+	}
 }

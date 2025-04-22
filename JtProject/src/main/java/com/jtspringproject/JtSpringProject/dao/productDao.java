@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,37 +21,53 @@ public class productDao {
         this.sessionFactory = sf;
     }
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Product> getProducts(){
-		return this.sessionFactory.getCurrentSession().createQuery("from PRODUCT").list();
+		Session session = this.sessionFactory.getCurrentSession();
+		Query<Product> query = session.createQuery("from PRODUCT", Product.class);
+		return query.list();
 	}
 	
 	@Transactional
 	public Product addProduct(Product product) {
-		this.sessionFactory.getCurrentSession().save(product);
+		Session session = this.sessionFactory.getCurrentSession();
+		session.save(product);
+		return product;
+	}
+	
+	@Transactional(readOnly = true)
+	public Product getProduct(int id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		return session.get(Product.class, id);
+	}
+
+	@Transactional
+	public Product updateProduct(Product product){
+		Session session = this.sessionFactory.getCurrentSession();
+		session.merge(product);
+		session.flush();
 		return product;
 	}
 	
 	@Transactional
-	public Product getProduct(int id) {
-		return this.sessionFactory.getCurrentSession().get(Product.class, id);
-	}
-
-	public Product updateProduct(Product product){
-		this.sessionFactory.getCurrentSession().update(String.valueOf(Product.class),product);
-		return product;
-	}
-	@Transactional
-	public Boolean deletProduct(int id) {
-
+	public Boolean deleteProduct(int id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Object persistanceInstance = session.load(Product.class, id);
+		Product product = session.get(Product.class, id);
 
-		if (persistanceInstance != null) {
-			session.delete(persistanceInstance);
+		if (product != null) {
+			session.delete(product);
 			return true;
 		}
 		return false;
 	}
-
+	
+	@Transactional(readOnly = true)
+	public List<Product> getProductsByCategory(int categoryId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query<Product> query = session.createQuery(
+				"from PRODUCT p where p.category.id = :categoryId", 
+				Product.class);
+		query.setParameter("categoryId", categoryId);
+		return query.list();
+	}
 }

@@ -4,25 +4,23 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name="CART")
 @Entity(name="CART")
+@Table(name="CART")
 public class Cart {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="customer_id")
     private User customer;
 
-//    @ManyToMany
-//    @JoinTable(
-//            joinColumns = @JoinColumn(name = "cart_id"),
-//            inverseJoinColumns = @JoinColumn(name = "product_id")
-//    )
-//    private List<Product> products;
+    @Column(name = "is_checkout")
+    private boolean isCheckout = false;
 
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<CartItem> cartItems = new ArrayList<>();
 
     public Cart() {
     }
@@ -35,7 +33,6 @@ public class Cart {
         this.id = id;
     }
 
-
     public User getCustomer() {
         return customer;
     }
@@ -44,29 +41,47 @@ public class Cart {
         this.customer = customer;
     }
 
-//    public List<Product> getProducts() {
-//        return products;
-//    }
+    public boolean isCheckout() {
+        return isCheckout;
+    }
 
-//    public List<Product> getProductsByUser(int customer_id ) {
-//        List<Product> userProducts = new ArrayList<Product>();
-//        for (Product product : products) {
-//            if (product.getCustomer().getId() == customer_id) {
-//                userProducts.add(product);
-//            }
-//        }
-//        return userProducts;
-//    }
+    public void setCheckout(boolean checkout) {
+        isCheckout = checkout;
+    }
 
-//    public void setProducts(List<Product> products) {
-//        this.products = products;
-//    }
+    public List<CartItem> getCartItems() {
+        return cartItems;
+    }
 
-//    public void addProduct(Product product) {
-//        products.add(product);
-//    }
-//
-//    public void removeProduct(Product product) {
-//        products.remove(product);
-//    }
+    public void setCartItems(List<CartItem> cartItems) {
+        this.cartItems = cartItems;
+    }
+
+    public void addCartItem(CartItem cartItem) {
+        cartItems.add(cartItem);
+        cartItem.setCart(this);
+    }
+
+    public void removeCartItem(CartItem cartItem) {
+        cartItems.remove(cartItem);
+        cartItem.setCart(null);
+    }
+
+    public double getTotal() {
+        double total = 0;
+        for (CartItem item : cartItems) {
+            total += item.getSubtotal();
+        }
+        return total;
+    }
+    
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "id=" + id +
+                ", customer=" + (customer != null ? customer.getId() : "null") +
+                ", isCheckout=" + isCheckout +
+                ", cartItemsCount=" + (cartItems != null ? cartItems.size() : 0) +
+                '}';
+    }
 }

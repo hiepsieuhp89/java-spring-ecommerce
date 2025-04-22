@@ -158,6 +158,21 @@
 			</nav>
 		</div>
 
+        <!-- Alert Messages -->
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error!</strong> ${error}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+        
+        <c:if test="${not empty param.error}">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error!</strong> ${param.error}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+
 		<div class="card mb-4">
 			<div class="card-header py-3">
 				<h6 class="m-0 font-weight-bold text-primary">Product Information</h6>
@@ -231,11 +246,17 @@
 							
 							<div class="mb-3">
 								<label for="productImage" class="form-label required-field">Product Image URL</label>
-								<input type="text" class="form-control" name="productImage" id="productImage" required placeholder="Enter image URL">
+								<input type="text" class="form-control" name="productImage" id="productImageUrl" required placeholder="Enter image URL">
 								<div class="invalid-feedback">
 									Please provide an image URL.
 								</div>
 								<small class="text-muted">Enter a direct URL to the product image</small>
+							</div>
+							
+							<div class="mb-3">
+								<label for="productImageFile" class="form-label">Or Upload an Image</label>
+								<input type="file" class="form-control" name="productImageFile" id="productImageFile" accept="image/jpeg, image/png" onchange="loadFile(event)">
+								<small class="text-muted">If you upload a file, it will override the URL above</small>
 							</div>
 							
 							<div class="mb-3">
@@ -286,13 +307,19 @@
 				})
 		})()
 		
-		// Image preview functionality
-		document.getElementById('productImage').addEventListener('change', function() {
-			const imgUrl = this.value;
-			const preview = document.getElementById('imgPreview');
-			
-			if (imgUrl) {
-				preview.src = imgUrl;
+		// File input preview functionality
+		var loadFile = function(event) {
+			var image = document.getElementById('imgPreview');
+			image.src = URL.createObjectURL(event.target.files[0]);
+			// When file is selected, clear the URL field
+			document.getElementById('productImageUrl').value = '';
+		};
+		
+		// URL input preview functionality
+		document.getElementById('productImageUrl').addEventListener('change', function() {
+			var preview = document.getElementById('imgPreview');
+			if (this.value) {
+				preview.src = this.value;
 			} else {
 				preview.src = '';
 			}

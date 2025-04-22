@@ -102,17 +102,21 @@ public class AdminController {
 	}
 
 	
-//	 --------------------------Remaining --------------------
+//	 --------------------------Products --------------------
 	@GetMapping("products")
 	public ModelAndView getproduct() {
 		ModelAndView mView = new ModelAndView("products");
 
-		List<Product> products = this.productService.getProducts();
-		
-		if (products.isEmpty()) {
-			mView.addObject("msg", "No products are available");
-		} else {
-			mView.addObject("products", products);
+		try {
+			List<Product> products = this.productService.getProducts();
+			
+			if (products.isEmpty()) {
+				mView.addObject("msg", "No products are available");
+			} else {
+				mView.addObject("products", products);
+			}
+		} catch (Exception e) {
+			mView.addObject("error", "Error loading products: " + e.getMessage());
 		}
 		return mView;
 	}
@@ -120,58 +124,159 @@ public class AdminController {
 	@GetMapping("products/add")
 	public ModelAndView addProduct() {
 		ModelAndView mView = new ModelAndView("productsAdd");
-		List<Category> categories = this.categoryService.getCategories();
-		mView.addObject("categories",categories);
+		try {
+			List<Category> categories = this.categoryService.getCategories();
+			List<Product> products = this.productService.getProducts();
+			
+			// For auto-ID generation in the JSP
+			if (!products.isEmpty()) {
+				mView.addObject("products", products);
+			}
+			
+			mView.addObject("categories", categories);
+		} catch (Exception e) {
+			mView.addObject("error", "Error preparing add form: " + e.getMessage());
+		}
 		return mView;
 	}
 
-	@RequestMapping(value = "products/add",method=RequestMethod.POST)
-	public String addProduct(@RequestParam("name") String name,@RequestParam("categoryid") int categoryId ,@RequestParam("price") int price,@RequestParam("weight") int weight, @RequestParam("quantity")int quantity,@RequestParam("description") String description,@RequestParam("productImage") String productImage) {
-		System.out.println(categoryId);
-		Category category = this.categoryService.getCategory(categoryId);
-		Product product = new Product();
-		product.setId(categoryId);
-		product.setName(name);
-		product.setCategory(category);
-		product.setDescription(description);
-		product.setPrice(price);
-		product.setImage(productImage);
-		product.setWeight(weight);
-		product.setQuantity(quantity);
-		this.productService.addProduct(product);
-		return "redirect:/admin/products";
+	@RequestMapping(value = "products/add", method=RequestMethod.POST)
+	public String addProduct(
+			@RequestParam("name") String name,
+			@RequestParam("categoryid") int categoryId,
+			@RequestParam("price") int price,
+			@RequestParam("weight") int weight, 
+			@RequestParam("quantity") int quantity,
+			@RequestParam("description") String description,
+			@RequestParam("productImage") String productImage) {
+		
+		try {
+			Category category = this.categoryService.getCategory(categoryId);
+			if (category == null) {
+				return "redirect:/admin/products/add?error=Category not found";
+			}
+			
+			Product product = new Product();
+			product.setName(name);
+			product.setCategory(category);
+			product.setDescription(description);
+			product.setPrice(price);
+			product.setImage(productImage);
+			product.setWeight(weight);
+			product.setQuantity(quantity);
+			
+			this.productService.addProduct(product);
+			return "redirect:/admin/products?success=Product added successfully";
+		} catch (Exception e) {
+			return "redirect:/admin/products/add?error=" + e.getMessage();
+		}
 	}
 
 	@GetMapping("products/update/{id}")
 	public ModelAndView updateproduct(@PathVariable("id") int id) {
-		
 		ModelAndView mView = new ModelAndView("productsUpdate");
-		Product product = this.productService.getProduct(id);
-		List<Category> categories = this.categoryService.getCategories();
-
-		mView.addObject("categories",categories);
-		mView.addObject("product", product);
+		
+		try {
+			Product product = this.productService.getProduct(id);
+			if (product == null) {
+				mView.setViewName("redirect:/admin/products?error=Product not found");
+				return mView;
+			}
+			
+			List<Category> categories = this.categoryService.getCategories();
+			mView.addObject("categories", categories);
+			mView.addObject("product", product);
+		} catch (Exception e) {
+			mView.setViewName("redirect:/admin/products?error=" + e.getMessage());
+		}
+		
 		return mView;
 	}
 	
-	@RequestMapping(value = "products/update/{id}",method=RequestMethod.POST)
-	public String updateProduct(@PathVariable("id") int id ,@RequestParam("name") String name,@RequestParam("categoryid") int categoryId ,@RequestParam("price") int price,@RequestParam("weight") int weight, @RequestParam("quantity")int quantity,@RequestParam("description") String description,@RequestParam("productImage") String productImage)
-	{
-
-//		this.productService.updateProduct();
-		return "redirect:/admin/products";
+	@RequestMapping(value = "products/update/{id}", method=RequestMethod.POST)
+	public String updateProduct(
+			@PathVariable("id") int id,
+			@RequestParam("name") String name,
+			@RequestParam("categoryid") int categoryId,
+			@RequestParam("price") int price,
+			@RequestParam("weight") int weight, 
+			@RequestParam("quantity") int quantity,
+			@RequestParam("description") String description,
+			@RequestParam("productImage") String productImage) {
+		
+		try {
+			// Validate product exists
+			Product existingProduct = this.productService.getProduct(id);
+			if (existingProduct == null) {
+				return "redirect:/admin/products?error=Product not found";
+			}
+			
+			// Validate category exists
+			Category category = this.categoryService.getCategory(categoryId);
+			if (category == null) {
+				return "redirect:/admin/products/update/" + id + "?error=Category not found";
+			}
+			
+			Product product = new Product();
+			product.setId(id);
+			product.setName(name);
+			product.setCategory(category);
+			product.setDescription(description);
+			product.setPrice(price);
+			product.setImage(productImage);
+			product.setWeight(weight);
+			product.setQuantity(quantity);
+			
+			this.productService.updateProduct(id, product);
+			return "redirect:/admin/products?success=Product updated successfully";
+		} catch (Exception e) {
+			return "redirect:/admin/products/update/" + id + "?error=" + e.getMessage();
+		}
 	}
 	
 	@GetMapping("products/delete")
-	public String removeProduct(@RequestParam("id") int id)
-	{
-		this.productService.deleteProduct(id);
-		return "redirect:/admin/products";
+	public String removeProduct(@RequestParam("id") int id) {
+		try {
+			boolean deleted = this.productService.deleteProduct(id);
+			if (deleted) {
+				return "redirect:/admin/products?success=Product deleted successfully";
+			} else {
+				return "redirect:/admin/products?error=Product not found";
+			}
+		} catch (Exception e) {
+			return "redirect:/admin/products?error=" + e.getMessage();
+		}
+	}
+	
+	@GetMapping("products/category/{categoryId}")
+	public ModelAndView getProductsByCategory(@PathVariable("categoryId") int categoryId) {
+		ModelAndView mView = new ModelAndView("products");
+		
+		try {
+			Category category = this.categoryService.getCategory(categoryId);
+			if (category == null) {
+				mView.addObject("error", "Category not found");
+				return mView;
+			}
+			
+			List<Product> products = this.productService.getProductsByCategory(categoryId);
+			
+			if (products.isEmpty()) {
+				mView.addObject("msg", "No products found in category: " + category.getName());
+			} else {
+				mView.addObject("products", products);
+				mView.addObject("categoryName", category.getName());
+			}
+		} catch (Exception e) {
+			mView.addObject("error", "Error loading products: " + e.getMessage());
+		}
+		
+		return mView;
 	}
 	
 	@PostMapping("products")
 	public String postproduct() {
-		return "redirect:/admin/categories";
+		return "redirect:/admin/products";
 	}
 	
 	@GetMapping("customers")
